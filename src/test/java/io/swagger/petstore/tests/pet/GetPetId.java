@@ -15,7 +15,7 @@ import static io.swagger.petstore.specs.ProjectSpecs.ResponseSpec;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class GetPetIdTests {
+public class GetPetId {
 
     Faker faker = new Faker();
     @Test
@@ -56,7 +56,6 @@ public class GetPetIdTests {
         assertEquals(petName, responseId.getName());
         assertEquals(data.getStatus(), responseId.getStatus());
     }
-
     @Test
     @DisplayName("Request with unknown Id, expecting HTTP 404")
     @Owner("emelianovpv")

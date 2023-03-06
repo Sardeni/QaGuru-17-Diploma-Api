@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PostPet {
     Faker faker = new Faker();
-   @Test
+    @Test
     @DisplayName("Add a new pet to the store")
     @Owner("emelianovpv")
     @Tag("regress")
@@ -30,18 +30,30 @@ public class PostPet {
         data.setPhotoUrls(photoUrlList);
         data.setStatus("pending");
 
-       PostPetResponseModel response = given(RequestSpec)
+        PostPetResponseModel response = given(RequestSpec)
                 .body(data)
                 .when()
                 .post("/pet")
                 .then().log().all()
                 .spec(ResponseSpec)
                 .statusCode(200)
-               .extract().as(PostPetResponseModel.class);
+                .extract().as(PostPetResponseModel.class);
 
-       assertEquals(petName, response.getName());
-       assertEquals(data.getStatus(), response.getStatus());
-     //  assertEquals(data.getPhotoUrls(), response.getPhotoUrls());
+        assertEquals(petName, response.getName());
+        assertEquals(data.getStatus(), response.getStatus());
+        //  assertEquals(data.getPhotoUrls(), response.getPhotoUrls());
+    }
+    @Test
+    @DisplayName("Request without body, expecting HTTP 405")
+    @Owner("emelianovpv")
+    @Tag("regress")
+    public void postPetWithoutBody() {
 
+        given(RequestSpec)
+                .when()
+                .post("/pet")
+                .then().log().all()
+                .spec(ResponseSpec)
+                .statusCode(405);
     }
 }
