@@ -1,26 +1,28 @@
 package io.swagger.petstore.tests.pet;
 
 import io.qameta.allure.Owner;
+import io.swagger.petstore.models.GetPetIdResponseModel;
 import io.swagger.petstore.models.PostPetRequestModel;
 import io.swagger.petstore.models.PostPetResponseModel;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
-import com.github.javafaker.Faker;
 import org.junit.jupiter.api.Test;
+import com.github.javafaker.Faker;
 
 import static io.restassured.RestAssured.given;
 import static io.swagger.petstore.specs.ProjectSpecs.RequestSpec;
 import static io.swagger.petstore.specs.ProjectSpecs.ResponseSpec;
-
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PostPet {
+public class GetPetIdTests {
+
     Faker faker = new Faker();
     @Test
-    @DisplayName("Add a new pet to the store")
+    @DisplayName("Finds pets by ID")
     @Owner("emelianovpv")
     @Tag("regress")
-    public void postPetCorrectData() {
+    public void getFindById() {
 
         String petName = faker.funnyName().name();
 
@@ -39,21 +41,34 @@ public class PostPet {
                 .statusCode(200)
                 .extract().as(PostPetResponseModel.class);
 
-        assertEquals(petName, response.getName());
-        assertEquals(data.getStatus(), response.getStatus());
-        //  assertEquals(data.getPhotoUrls(), response.getPhotoUrls());
+        Long petId = response.getId();
+
+        GetPetIdResponseModel responseId = given(RequestSpec)
+                    .pathParam("petId", petId)
+                    .when()
+                    .get("/pet/{petId}")
+                    .then().log().all()
+                    .spec(ResponseSpec)
+                    .statusCode(200)
+                    .extract().as(GetPetIdResponseModel.class);
+
+        assertEquals(petId, responseId.getId());
+        assertEquals(petName, responseId.getName());
+        assertEquals(data.getStatus(), responseId.getStatus());
     }
     @Test
-    @DisplayName("Request without body, expecting HTTP 405")
+    @DisplayName("Request with unknown Id, expecting HTTP 404")
     @Owner("emelianovpv")
     @Tag("regress")
-    public void postPetWithoutBody() {
+    public void getFindByIdUnkownId() {
 
         given(RequestSpec)
+                .pathParam("petId", "00000209800000")
                 .when()
-                .post("/pet")
+                .get("/pet/{petId}")
                 .then().log().all()
                 .spec(ResponseSpec)
-                .statusCode(405);
+                .statusCode(404)
+                .body("message", is("Pet not found"));
     }
 }

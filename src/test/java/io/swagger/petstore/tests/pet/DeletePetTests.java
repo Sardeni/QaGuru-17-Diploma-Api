@@ -1,13 +1,12 @@
 package io.swagger.petstore.tests.pet;
 
+import com.github.javafaker.Faker;
 import io.qameta.allure.Owner;
-import io.swagger.petstore.models.GetPetIdResponseModel;
 import io.swagger.petstore.models.PostPetRequestModel;
 import io.swagger.petstore.models.PostPetResponseModel;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import com.github.javafaker.Faker;
 
 import static io.restassured.RestAssured.given;
 import static io.swagger.petstore.specs.ProjectSpecs.RequestSpec;
@@ -15,14 +14,15 @@ import static io.swagger.petstore.specs.ProjectSpecs.ResponseSpec;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class GetPetId {
+public class DeletePetTests {
 
     Faker faker = new Faker();
+
     @Test
-    @DisplayName("Finds pets by ID")
+    @DisplayName("Delete a pet")
     @Owner("emelianovpv")
     @Tag("regress")
-    public void getFindById() {
+    public void deletePetCorrectData() {
 
         String petName = faker.funnyName().name();
 
@@ -41,34 +41,46 @@ public class GetPetId {
                 .statusCode(200)
                 .extract().as(PostPetResponseModel.class);
 
+        assertEquals(petName, response.getName());
+        assertEquals(data.getStatus(), response.getStatus());
+
         Long petId = response.getId();
 
-        GetPetIdResponseModel responseId = given(RequestSpec)
-                    .pathParam("petId", petId)
-                    .when()
-                    .get("/pet/{petId}")
-                    .then().log().all()
-                    .spec(ResponseSpec)
-                    .statusCode(200)
-                    .extract().as(GetPetIdResponseModel.class);
-
-        assertEquals(petId, responseId.getId());
-        assertEquals(petName, responseId.getName());
-        assertEquals(data.getStatus(), responseId.getStatus());
-    }
-    @Test
-    @DisplayName("Request with unknown Id, expecting HTTP 404")
-    @Owner("emelianovpv")
-    @Tag("regress")
-    public void getFindByIdUnkownId() {
+        given(RequestSpec)
+                .pathParam("petId", petId)
+                .when()
+                .delete("/pet/{petId}")
+                .then().log().all()
+                .spec(ResponseSpec)
+                .statusCode(200)
+                .body("type", is("unknown"))
+                .body("message", is(petId.toString()));
 
         given(RequestSpec)
-                .pathParam("petId", "00000209800000")
+                .pathParam("petId", petId)
                 .when()
                 .get("/pet/{petId}")
                 .then().log().all()
                 .spec(ResponseSpec)
                 .statusCode(404)
                 .body("message", is("Pet not found"));
+
+    }
+
+    @Test
+    @DisplayName("Delete a pet, request with String type Id")
+    @Owner("emelianovpv")
+    @Tag("regress")
+    public void deletePetWithTextId() {
+
+        given(RequestSpec)
+                .pathParam("petId", "Test")
+                .when()
+                .delete("/pet/{petId}")
+                .then().log().all()
+                .spec(ResponseSpec)
+                .statusCode(404)
+                .body("type", is("unknown"))
+                .body("message", is("java.lang.NumberFormatException: For input string: \"Test\""));
     }
 }

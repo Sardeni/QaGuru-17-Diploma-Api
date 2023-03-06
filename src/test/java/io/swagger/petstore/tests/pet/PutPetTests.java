@@ -4,6 +4,9 @@ import com.github.javafaker.Faker;
 import io.qameta.allure.Owner;
 import io.swagger.petstore.models.PostPetRequestModel;
 import io.swagger.petstore.models.PostPetResponseModel;
+import io.swagger.petstore.models.PutPetRequestModel;
+import io.swagger.petstore.models.PutPetResponseModel;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -14,23 +17,23 @@ import static io.swagger.petstore.specs.ProjectSpecs.ResponseSpec;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class DeletePet {
+public class PutPetTests {
 
     Faker faker = new Faker();
-
     @Test
-    @DisplayName("Delete a pet")
+    @DisplayName("Update an existing pet")
     @Owner("emelianovpv")
     @Tag("regress")
-    public void deletePetCorrectData() {
+    public void putPetCorrectData() {
 
         String petName = faker.funnyName().name();
+        String petNameNew = faker.funnyName().name();
 
         PostPetRequestModel data = new PostPetRequestModel();
         data.setName(petName);
         String[] photoUrlList = {"http://t1.gstatic.com/licensed-image?q=tbn:ANd9GcTVNBVgDTZrFvUARECMzBrur7L34aGgMgeqrY3JE6rWUauX3cRgAjXim93D7cn2UTQM"};
         data.setPhotoUrls(photoUrlList);
-        data.setStatus("pending");
+        data.setStatus("available");
 
         PostPetResponseModel response = given(RequestSpec)
                 .body(data)
@@ -46,18 +49,38 @@ public class DeletePet {
 
         Long petId = response.getId();
 
-        given(RequestSpec)
-                .pathParam("petId", petId)
+        PutPetRequestModel putData =  new PutPetRequestModel();
+        putData.setId(petId);
+        putData.setName(petNameNew);
+        putData.setStatus("pending");
+
+        PutPetResponseModel putResponse = given(RequestSpec)
+                .body(putData)
                 .when()
-                .delete("/pet/{petId}")
+                .put("/pet")
                 .then().log().all()
                 .spec(ResponseSpec)
                 .statusCode(200)
-                .body("type", is("unknown"))
-                .body("message", is(petId.toString()));
+                .extract().as(PutPetResponseModel.class);
+
+        assertEquals(petId, putResponse.getId());
+        assertEquals(petNameNew, putResponse.getName());
+        assertEquals("pending",putResponse.getStatus());
+    }
+
+    @Test
+    @DisplayName("Error in try to update unexisting pet")
+    @Owner("emelianovpv")
+    @Tag("regress")
+    @Disabled("Incorrect work of service: 200 instead of 404 ")
+    public void putPetUnExistId() {
+
+
+        String petNameNew = faker.funnyName().name();
+        Long petUnExistId = 10000002098000000L;
 
         given(RequestSpec)
-                .pathParam("petId", petId)
+                .pathParam("petId", petUnExistId)
                 .when()
                 .get("/pet/{petId}")
                 .then().log().all()
@@ -65,22 +88,18 @@ public class DeletePet {
                 .statusCode(404)
                 .body("message", is("Pet not found"));
 
-    }
 
-    @Test
-    @DisplayName("Delete a pet, request with String type Id")
-    @Owner("emelianovpv")
-    @Tag("regress")
-    public void deletePetWithTextId() {
+        PutPetRequestModel putData =  new PutPetRequestModel();
+        putData.setId(petUnExistId);
+        putData.setName(petNameNew);
+        putData.setStatus("pending");
 
         given(RequestSpec)
-                .pathParam("petId", "Test")
+                .body(putData)
                 .when()
-                .delete("/pet/{petId}")
+                .put("/pet")
                 .then().log().all()
                 .spec(ResponseSpec)
-                .statusCode(404)
-                .body("type", is("unknown"))
-                .body("message", is("java.lang.NumberFormatException: For input string: \"Test\""));
+                .statusCode(404);
     }
 }

@@ -15,7 +15,7 @@ import static io.swagger.petstore.specs.ProjectSpecs.ResponseSpec;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PostPetId {
+public class PostPetIdTests {
 
     Faker faker = new Faker();
 
