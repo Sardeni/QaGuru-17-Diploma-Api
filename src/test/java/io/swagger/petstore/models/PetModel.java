@@ -1,12 +1,13 @@
 package io.swagger.petstore.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
-
-public @Data class PostPetResponseModel {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public @Data class PetModel {
     private Long id;
     private Category category;
     private String name;
     private  String[] photoUrls;
-    private Tag[] tags;
+    private Tag[] tagsList;
     private  String status;
 }
