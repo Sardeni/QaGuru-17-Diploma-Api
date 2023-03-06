@@ -109,7 +109,7 @@ test/smoke/regress - запуск всех тестов/только smoke/то�
 
 # Интеграция с Jira
 <p align="center">
-  <img src="images/screens/Jira.png" alt="JiraIntegration" width="950">
+  <img src="images/screenshots/Jira.png" alt="JiraIntegration" width="950">
 </p>
 
 ### <img width="4%" style="vertical-align:middle" title="Telegram" src="images/logo/Telegram.svg"> Уведомления в Telegram с использованием бота
