@@ -7,6 +7,7 @@ import io.swagger.petstore.models.PostPetResponseModel;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
@@ -37,8 +38,7 @@ public class DeletePetTests {
 
         PostPetResponseModel response =
                 step("create a new pet", () -> {
-                    PostPetResponseModel actual = new PostPetResponseModel();
-                    given(RequestSpec)
+                  return given(RequestSpec)
                                     .body(data)
                                     .when()
                                     .post("/pet")
@@ -46,11 +46,12 @@ public class DeletePetTests {
                                     .spec(ResponseSpec)
                                     .statusCode(200)
                                     .extract().as(PostPetResponseModel.class);
-
-                    assertEquals(petName, actual.getName());
-                    assertEquals(data.getStatus(), actual.getStatus());
-                    return actual;
                         });
+
+        step("validating response", () -> {
+            assertEquals(petName, response.getName());
+            assertEquals(data.getStatus(), response.getStatus());
+        });
 
         Long petId =  response.getId();
 
