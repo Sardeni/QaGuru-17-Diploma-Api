@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
 import static io.swagger.petstore.specs.ProjectSpecs.RequestSpec;
 import static io.swagger.petstore.specs.ProjectSpecs.ResponseSpec;
@@ -27,24 +28,31 @@ public class DeletePetTests {
         String petName = faker.funnyName().name();
 
         PostPetRequestModel data = new PostPetRequestModel();
+
         data.setName(petName);
         String[] photoUrlList = {"http://t1.gstatic.com/licensed-image?q=tbn:ANd9GcTVNBVgDTZrFvUARECMzBrur7L34aGgMgeqrY3JE6rWUauX3cRgAjXim93D7cn2UTQM"};
         data.setPhotoUrls(photoUrlList);
         data.setStatus("pending");
 
-        PostPetResponseModel response = given(RequestSpec)
-                .body(data)
-                .when()
-                .post("/pet")
-                .then().log().all()
-                .spec(ResponseSpec)
-                .statusCode(200)
-                .extract().as(PostPetResponseModel.class);
 
-        assertEquals(petName, response.getName());
-        assertEquals(data.getStatus(), response.getStatus());
+        PostPetResponseModel response =
+                step("create a new pet", () -> {
+                    PostPetResponseModel actual = new PostPetResponseModel();
+                    given(RequestSpec)
+                                    .body(data)
+                                    .when()
+                                    .post("/pet")
+                                    .then().log().all()
+                                    .spec(ResponseSpec)
+                                    .statusCode(200)
+                                    .extract().as(PostPetResponseModel.class);
 
-        Long petId = response.getId();
+                    assertEquals(petName, actual.getName());
+                    assertEquals(data.getStatus(), actual.getStatus());
+                    return actual;
+                        });
+
+        Long petId =  response.getId();
 
         given(RequestSpec)
                 .pathParam("petId", petId)
