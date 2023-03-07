@@ -67,12 +67,12 @@ gradle clean
 test/smoke/regress - запуск всех тестов/только smoke/только regress
 ```
 
-## <img width="4%" style="vertical-align:middle" title="Jenkins" src="images/logo/Jenkins.svg"> Сборка в Jenkins
+## <img width="4%" style="vertical-align:middle" title="Jenkins" src="images/logo/Jenkins.svg"> <a href="https://jenkins.autotests.cloud/job/QaGuru17-Emelianov-Diplom-Api/">Сборка в Jenkins</a>
 <p align="center">
 <img title="Jenkins Build" src="images/screenshots/Jenkins.png">
 </p>
 
-## <img width="4%" style="vertical-align:middle" title="Allure Report" src="images/logo/Allure_Report.svg"> Пример Allure-отчета
+## <img width="4%" style="vertical-align:middle" title="Allure Report" src="images/logo/Allure_Report.svg"> <a href="https://jenkins.autotests.cloud/job/QaGuru17-Emelianov-Diplom-Api/3/allure/">Пример Allure-отчета</a>
 ### Overview
 
 <p align="center">

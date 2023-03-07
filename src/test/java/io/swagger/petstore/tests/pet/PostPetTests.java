@@ -33,20 +33,21 @@ public class PostPetTests {
 
         PetModel response =
                 step("create a new pet", () -> {
-                            return given(RequestSpec)
-                                    .body(data)
-                                    .when()
-                                    .post("/pet")
-                                    .then().log().all()
-                                    .spec(ResponseSpec)
-                                    .statusCode(200)
-                                    .extract().as(PetModel.class);
-                        });
+                    return given(RequestSpec)
+                            .body(data)
+                            .when()
+                            .post("/pet")
+                            .then().log().all()
+                            .spec(ResponseSpec)
+                            .statusCode(200)
+                            .extract().as(PetModel.class);
+                });
 
         step("validating pet data", () -> {
             assertEquals(petName, response.getName());
             assertEquals(data.getStatus(), response.getStatus());
-          //  assertEquals(data.getPhotoUrls(), response.getPhotoUrls());
+            // Нужна помощь с данным этапом проверки - данные приходят верные, но пишет, что не совпадают.
+            //  assertEquals(data.getPhotoUrls(), response.getPhotoUrls());
         });
 
     }
