@@ -11,7 +11,7 @@ import static io.swagger.petstore.helpers.CustomApiListener.withCustomTemplates;
 
 public class ProjectSpecs {
 
-    public static RequestSpecification RequestSpec = with()
+    public static RequestSpecification requestSpec = with()
             .header("api_key", "special-key")
             .log().all()
             .filter(withCustomTemplates())
@@ -20,7 +20,7 @@ public class ProjectSpecs {
             .contentType(JSON);
 
 
-    public static ResponseSpecification ResponseSpec = new ResponseSpecBuilder()
+    public static ResponseSpecification responseSpec = new ResponseSpecBuilder()
             .log(ALL)
             .build();
 }
