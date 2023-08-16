@@ -12,7 +12,7 @@ repositories {
     mavenCentral()
 }
 
-def allureVersion = "2.21.0",
+def allureVersion = "2.23.0",
     assertJVersion = "3.24.2",
     restAssuredVersion = "5.3.0"
 
@@ -22,13 +22,12 @@ dependencies {
             "io.qameta.allure:allure-rest-assured:$allureVersion",
             "org.junit.jupiter:junit-jupiter:5.9.1",
             "com.github.javafaker:javafaker:1.0.2",
-            "io.github.bonigarcia:webdrivermanager:5.3.2",
-            "org.seleniumhq.selenium:selenium-devtools-v109:4.8.0",
-            "org.assertj:assertj-core:$assertJVersion"
+            "org.assertj:assertj-core:$assertJVersion",
+            "com.fasterxml.jackson.core:jackson-annotations:2.15.2"
     )
 
     allure {
-        version.set("2.21.0")
+        version.set(allureVersion)
         adapter {
             allureJavaVersion.set(allureVersion)
             aspectjVersion.set("1.9.5")
