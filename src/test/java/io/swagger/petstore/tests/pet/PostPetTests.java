@@ -40,6 +40,22 @@ public class PostPetTests {
             assertArrayEquals(data.getPhotoUrls(), newPet.getPhotoUrls());
         });
 
+        Long petId = newPet.getId();
+        step("Checking pet is created in DB", () -> {
+            PetModel responseId = given(requestSpec)
+                    .pathParam("petId", petId)
+                    .when()
+                    .get("/pet/{petId}")
+                    .then().log().all()
+                    .spec(responseSpec)
+                    .statusCode(200)
+                    .extract().as(PetModel.class);
+
+            assertEquals(petId, responseId.getId());
+            assertEquals(petName, responseId.getName());
+            assertEquals(data.getStatus(), responseId.getStatus());
+        });
+
     }
 
     @Test

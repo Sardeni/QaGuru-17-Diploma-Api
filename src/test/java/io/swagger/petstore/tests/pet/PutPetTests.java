@@ -68,7 +68,7 @@ public class PutPetTests {
 
     @Test
     @DisplayName("Error in try to update unexisting pet")
-    @Disabled("Incorrect work of service: 200 instead of 404")
+    @Disabled("Incorrect work of service: it's creating a new pet with PUT, not updating")
     public void putPetUnExistId() {
 
 

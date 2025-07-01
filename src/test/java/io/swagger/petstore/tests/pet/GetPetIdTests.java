@@ -55,7 +55,7 @@ public class GetPetIdTests {
 
     @Test
     @DisplayName("Request with unknown Id, expecting HTTP 404")
-    public void getFindByIdUnkownId() {
+    public void getFindByIdUnknownId() {
 
         given(requestSpec)
                 .pathParam("petId", "00000209800000")

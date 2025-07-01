@@ -23,7 +23,7 @@ dependencies {
             "org.junit.jupiter:junit-jupiter:5.9.1",
             "com.github.javafaker:javafaker:1.0.2",
             "org.assertj:assertj-core:$assertJVersion",
-            "com.fasterxml.jackson.core:jackson-annotations:2.15.2"
+            "com.fasterxml.jackson.core:jackson-databind:2.19.0"
     )
 
     allure {
